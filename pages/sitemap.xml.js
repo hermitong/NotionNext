@@ -109,4 +109,11 @@ function getUniqueFields(fields) {
     }
     
     const existingField = uniqueFieldsMap.get(normalizedField.loc)
-    if (!exist
+    if (!existingField || new Date(normalizedField.lastmod) > new Date(existingField.lastmod)) {
+      uniqueFieldsMap.set(normalizedField.loc, normalizedField)
+    }
+  })
+
+  return Array.from(uniqueFieldsMap.values())
+    .filter(field => !field.loc.includes('undefined') && !field.loc.includes('null'))
+}
