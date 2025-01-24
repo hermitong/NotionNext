@@ -18,41 +18,23 @@ export const getServerSideProps = async ctx => {
       pageId: id,
       from: 'sitemap.xml'
     })
-    
-    // 确保使用 https 协议
-    let link = siteConfig('LINK', siteData?.siteInfo?.link, siteData.NOTION_CONFIG)
-    link = ensureHttpsUrl(link)
-    
+    const link = siteConfig(
+      'LINK',
+      siteData?.siteInfo?.link,
+      siteData.NOTION_CONFIG
+    )
     const localeFields = generateLocalesSitemap(link, siteData.allPages, locale)
     fields = fields.concat(localeFields)
   }
 
   fields = getUniqueFields(fields)
 
-  // 设置缓存头
+  // 缓存
   ctx.res.setHeader(
     'Cache-Control',
     'public, max-age=3600, stale-while-revalidate=59'
   )
-  
   return getServerSideSitemap(ctx, fields)
-}
-
-// 确保 URL 使用 https 协议
-function ensureHttpsUrl(url) {
-  if (!url) return 'https://hermitong.com'
-  url = url.trim().toLowerCase()
-  if (url.startsWith('http://')) {
-    url = 'https://' + url.slice(7)
-  } else if (!url.startsWith('https://')) {
-    url = 'https://' + url
-  }
-  return url
-}
-
-// 规范化路径
-function normalizePath(path) {
-  return path.replace(/\/+/g, '/').replace(/\/$/, '')
 }
 
 function generateLocalesSitemap(link, allPages, locale) {
@@ -63,16 +45,16 @@ function generateLocalesSitemap(link, allPages, locale) {
   
   // 基础路由配置
   const routes = [
-    { path: '', priority: '1.0' }, // 首页更高优先级
+    { path: '', priority: '1.0' },
     { path: 'archive', priority: '0.8' },
     { path: 'category', priority: '0.8' },
-    { path: 'tag', priority: '0.8' },
-    { path: 'search', priority: '0.6' },
     { path: 'rss/feed.xml', priority: '0.4' },
-    { path: 'exploration', priority: '0.8' },
-    { path: 'eureka', priority: '0.8' },
-    { path: 'developlog', priority: '0.8' }
+    { path: 'search', priority: '0.6' },
+    { path: 'tag', priority: '0.8' }
   ]
+
+  // 确保链接使用 https
+  link = ensureHttpsUrl(link)
 
   // 生成基础页面 URLs
   const defaultFields = routes.map(route => ({
@@ -116,4 +98,26 @@ function getUniqueFields(fields) {
 
   return Array.from(uniqueFieldsMap.values())
     .filter(field => !field.loc.includes('undefined') && !field.loc.includes('null'))
+}
+
+// 确保 URL 使用 https 协议
+function ensureHttpsUrl(url) {
+  if (!url) return 'https://hermitong.com'
+  url = url.trim().toLowerCase()
+  if (url.startsWith('http://')) {
+    url = 'https://' + url.slice(7)
+  } else if (!url.startsWith('https://')) {
+    url = 'https://' + url
+  }
+  return url
+}
+
+// 规范化路径，去除多余的斜杠
+function normalizePath(path) {
+  return path.replace(/([^:]\/)\/+/g, '$1').replace(/\/$/, '')
+}
+
+// 必须导出默认的 React 组件
+export default function Sitemap() {
+  return null
 }
