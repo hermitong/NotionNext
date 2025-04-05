@@ -9,6 +9,9 @@ Allow: /
 Disallow: /api/
 Disallow: /_next/
 
+# Host
+Host: https://hermitong.com
+
 # Sitemap
 Sitemap: https://hermitong.com/sitemap.xml`
 
