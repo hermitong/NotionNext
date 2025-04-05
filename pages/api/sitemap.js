@@ -12,18 +12,19 @@ export default async function handler(req, res) {
         pageId: siteId,
         from: 'sitemap-api'
       })
-      if (siteData?.allPages) {
-        allPages = allPages.concat(siteData.allPages)
-      }
+      allPages = allPages.concat(siteData.allPages || [])
     }
 
     // 设置正确的响应头
-    res.setHeader('Content-Type', 'application/xml; charset=utf-8')
+    res.setHeader('Content-Type', 'application/xml')
+    res.setHeader('Cache-Control', 'public, max-age=3600, stale-while-revalidate=300')
+
+    // 确保使用正确的域名
+    const sitemap = await generateSitemapXml({
+      allPages,
+      baseUrl: 'https://hermitong.com' // 强制使用正确的域名
+    })
     
-    // 生成站点地图
-    const sitemap = await generateSitemapXml({ allPages })
-    
-    // 直接发送响应
     res.status(200).send(sitemap)
   } catch (error) {
     console.error('生成站点地图时发生错误:', error)
