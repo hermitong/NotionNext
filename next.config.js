@@ -167,6 +167,10 @@ const nextConfig = {
           {
             source: '/:path*.html',
             destination: '/:path*'
+          },
+          {
+            source: '/sitemap.xml',
+            destination: '/api/sitemap'
           }
         ]
       },
