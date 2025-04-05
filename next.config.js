@@ -126,47 +126,9 @@ const nextConfig = {
   rewrites: process.env.EXPORT
     ? undefined
     : async () => {
-        // 处理多语言重定向
         const langsRewrites = []
-        if (BLOG.NOTION_PAGE_ID.indexOf(',') > 0) {
-          const siteIds = BLOG.NOTION_PAGE_ID.split(',')
-          const langs = []
-          for (let index = 0; index < siteIds.length; index++) {
-            const siteId = siteIds[index]
-            const prefix = extractLangPrefix(siteId)
-            // 如果包含前缀 例如 zh , en 等
-            if (prefix) {
-              langs.push(prefix)
-            }
-            console.log('[Locales]', siteId)
-          }
-
-          // 映射多语言
-          // 示例： source: '/:locale(zh|en)/:path*' ; :locale() 会将语言放入重写后的 `?locale=` 中。
-          langsRewrites.push(
-            {
-              source: `/:locale(${langs.join('|')})/:path*`,
-              destination: '/:path*'
-            },
-            // 匹配没有路径的情况，例如 [domain]/zh 或 [domain]/en
-            {
-              source: `/:locale(${langs.join('|')})`,
-              destination: '/'
-            },
-            // 匹配没有路径的情况，例如 [domain]/zh/ 或 [domain]/en/
-            {
-              source: `/:locale(${langs.join('|')})/`,
-              destination: '/'
-            }
-          )
-        }
-
         return [
           ...langsRewrites,
-          {
-            source: '/:path*.html',
-            destination: '/:path*'
-          },
           {
             source: '/sitemap.xml',
             destination: '/api/sitemap'
@@ -178,31 +140,11 @@ const nextConfig = {
     : async () => {
         return [
           {
-            source: '/:path*{/}?',
-            headers: [
-              { key: 'Access-Control-Allow-Credentials', value: 'true' },
-              { key: 'Access-Control-Allow-Origin', value: '*' },
-              {
-                key: 'Access-Control-Allow-Methods',
-                value: 'GET,OPTIONS,PATCH,DELETE,POST,PUT'
-              },
-              {
-                key: 'Access-Control-Allow-Headers',
-                value:
-                  'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-              }
-            ]
-          },
-          {
             source: '/sitemap.xml',
             headers: [
               {
                 key: 'Content-Type',
-                value: 'application/xml'
-              },
-              {
-                key: 'Cache-Control',
-                value: 'public, max-age=86400, stale-while-revalidate=43200'
+                value: 'application/xml; charset=utf-8'
               }
             ]
           }

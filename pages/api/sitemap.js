@@ -7,25 +7,24 @@ export default async function handler(req, res) {
     const siteIds = BLOG.NOTION_PAGE_ID.split(',')
     let allPages = []
     
-    // 获取所有页面数据
     for (const siteId of siteIds) {
       const siteData = await getGlobalData({
         pageId: siteId,
         from: 'sitemap-api'
       })
-      allPages = allPages.concat(siteData.allPages || [])
+      if (siteData?.allPages) {
+        allPages = allPages.concat(siteData.allPages)
+      }
     }
 
-    // 设置正确的 Content-Type
-    res.setHeader('Content-Type', 'application/xml')
-    res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=43200')
-
+    // 设置正确的响应头
+    res.setHeader('Content-Type', 'application/xml; charset=utf-8')
+    
     // 生成站点地图
     const sitemap = await generateSitemapXml({ allPages })
     
-    // 确保输出前没有任何空白字符
-    res.write(sitemap.trim())
-    res.end()
+    // 直接发送响应
+    res.status(200).send(sitemap)
   } catch (error) {
     console.error('生成站点地图时发生错误:', error)
     res.status(500).json({ error: '生成站点地图失败' })
