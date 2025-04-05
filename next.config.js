@@ -193,6 +193,15 @@ const nextConfig = {
                   'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
               }
             ]
+          },
+          {
+            source: '/sitemap.xml',
+            headers: [
+              {
+                key: 'Content-Type',
+                value: 'application/xml; charset=utf-8'
+              }
+            ]
           }
         ]
       },
@@ -230,7 +239,8 @@ const nextConfig = {
   publicRuntimeConfig: {
     // 这里的配置既可以服务端获取到，也可以在浏览器端获取到
     THEMES: themes
-  }
+  },
+  reactStrictMode: true
 }
 
 module.exports = process.env.ANALYZE
