@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=43200')
 
     // 生成站点地图
-    const sitemap = await generateSitemapXml(allPages)
+    const sitemap = await generateSitemapXml({ allPages })
     
     // 确保输出前没有任何空白字符
     res.write(sitemap.trim())
