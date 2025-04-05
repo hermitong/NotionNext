@@ -199,7 +199,7 @@ const nextConfig = {
             headers: [
               {
                 key: 'Content-Type',
-                value: 'application/xml; charset=utf-8'
+                value: 'application/xml'
               }
             ]
           }

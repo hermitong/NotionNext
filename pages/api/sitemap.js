@@ -17,14 +17,15 @@ export default async function handler(req, res) {
     }
 
     // 设置正确的 Content-Type
-    res.setHeader('Content-Type', 'application/xml; charset=utf-8')
+    res.setHeader('Content-Type', 'application/xml')
     res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=43200')
 
     // 生成站点地图
     const sitemap = await generateSitemapXml(allPages)
     
-    // 确保没有前置空白字符
-    res.status(200).send(sitemap.trim())
+    // 确保输出前没有任何空白字符
+    res.write(sitemap.trim())
+    res.end()
   } catch (error) {
     console.error('生成站点地图时发生错误:', error)
     res.status(500).json({ error: '生成站点地图失败' })
