@@ -123,33 +123,49 @@ const nextConfig = {
         ]
       },
   // 重写url
-  rewrites: process.env.EXPORT
-    ? undefined
-    : async () => {
-        const langsRewrites = []
-        return [
-          ...langsRewrites,
+  rewrites: async () => {
+    return [
+      {
+        source: '/robots.txt',
+        destination: '/api/robots'
+      },
+      {
+        source: '/sitemap.xml',
+        destination: '/api/sitemap'
+      }
+    ]
+  },
+  // 添加响应头配置
+  headers: async () => {
+    return [
+      {
+        source: '/robots.txt',
+        headers: [
           {
-            source: '/sitemap.xml',
-            destination: '/api/sitemap'
+            key: 'Content-Type',
+            value: 'text/plain'
+          },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=3600, stale-while-revalidate=300'
           }
         ]
       },
-  headers: process.env.EXPORT
-    ? undefined
-    : async () => {
-        return [
+      {
+        source: '/sitemap.xml',
+        headers: [
           {
-            source: '/sitemap.xml',
-            headers: [
-              {
-                key: 'Content-Type',
-                value: 'application/xml; charset=utf-8'
-              }
-            ]
+            key: 'Content-Type',
+            value: 'application/xml'
+          },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=3600, stale-while-revalidate=300'
           }
         ]
-      },
+      }
+    ]
+  },
   webpack: (config, { dev, isServer }) => {
     // 动态主题：添加 resolve.alias 配置，将动态路径映射到实际路径
     config.resolve.alias['@'] = path.resolve(__dirname)

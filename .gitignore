@@ -50,3 +50,7 @@ yarn-error.log*
 # yarn
 package-lock.json
 # yarn.lock
+
+# 确保不要忽略这些文件
+!public/robots.txt
+!public/sitemap.xml

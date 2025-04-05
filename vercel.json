@@ -1,5 +1,15 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
-  "headers": []
+  "headers": [],
+  "routes": [
+    {
+      "src": "/robots.txt",
+      "dest": "/api/robots"
+    },
+    {
+      "src": "/sitemap.xml",
+      "dest": "/api/sitemap"
+    }
+  ]
 }
