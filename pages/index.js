@@ -6,6 +6,8 @@ import { generateRss } from '@/lib/rss'
 import { generateSitemapXml } from '@/lib/sitemap'
 import { DynamicLayout } from '@/themes/theme'
 import { generateRedirectJson } from '@/lib/redirect'
+import React, { useEffect } from 'react'
+import AdBanner from '@/components/AdBanner'
 
 /**
  * 首页布局
@@ -14,7 +16,12 @@ import { generateRedirectJson } from '@/lib/redirect'
  */
 const Index = props => {
   const theme = siteConfig('THEME', BLOG.THEME, props.NOTION_CONFIG)
-  return <DynamicLayout theme={theme} layoutName='LayoutIndex' {...props} />
+  return (
+    <>
+      <AdBanner />
+      <DynamicLayout theme={theme} layoutName='LayoutIndex' {...props} />
+    </>
+  )
 }
 
 /**
